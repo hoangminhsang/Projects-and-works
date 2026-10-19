@@ -1,0 +1,11 @@
+{
+  "run": {
+    "soft_probe_prompt_cap": 10,
+    "generations": 1,
+    "seed": 42
+  },
+  "system": {
+    "parallel_attempts": false,
+    "parallel_requests": false
+  }
+}

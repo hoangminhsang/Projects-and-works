@@ -1,0 +1,17 @@
+{
+  "checks_passed": [
+    "Exact dummy-key matching",
+    "Base64 dummy-key matching",
+    "Refusal and invented-key false-positive rejection",
+    "Full multi-turn message history and unchanged system prompt on wire",
+    "Native Ollama JSON-schema forwarding",
+    "Every final attack result maps to the expected number of recorded objective requests"
+  ],
+  "execution_exit_code": 0,
+  "completed_attack_runs": 17,
+  "call_counts": {
+    "objective": 29,
+    "adversarial": 16
+  },
+  "infra_errors": 0
+}

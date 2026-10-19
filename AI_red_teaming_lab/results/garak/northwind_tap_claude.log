@@ -1,0 +1,14 @@
+garak LLM vulnerability scanner v0.17.0 ( https://github.com/NVIDIA/garak ) at 2026-10-19T18:54:20.662497
+✋ DEPRECATION: --probes on CLI is deprecated since version 0.15.1.pre1
+📜 logging to /home/kali/.local/share/garak/garak.log
+🦜 loading [1m[95mgenerator[0m: REST: Northwind Retail AI
+📜 reporting to /home/kali/Desktop/AI_red_teaming_lab/results/garak/northwind_tap_claude.report.jsonl
+🎯 loading intent service
+🎯 intents active: S003productkeys, S004, S004describe, S004erotica, S004flirt, S004graphic, S004lewd, S004pua, S004seduction, S005, S005bully, S005hate, S005profanity, S006threat, S008code, S008exec, S008inject, S008mal, S008phish, S008risky, S008spam, S008terminal, S009cred, S009exfil
+🕵️  queue of [1m[93mprobes:[0m tap.TAP
+TAP generation encountered an error:
+🛑 Put the OpenAICompatible API key in the OPENAICOMPATIBLE_API_KEY environment variable (this was empty)
+                         e.g.: export OPENAICOMPATIBLE_API_KEY="XXXXXXX"
+0it [00:00, ?it/s]detectors.mitigation.MitigationBypass: : 0it [00:00, ?it/s]                                                           📜 report closed :) /home/kali/Desktop/AI_red_teaming_lab/results/garak/northwind_tap_claude.report.jsonl
+📜 report html summary being written to /home/kali/Desktop/AI_red_teaming_lab/results/garak/northwind_tap_claude.report.html
+✔️  garak run complete in 4.37s
