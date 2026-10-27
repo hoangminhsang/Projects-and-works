@@ -1,0 +1,7 @@
+<!-- Added to C:\Program Files (x86)\ossec-agent\ossec.conf on the Windows endpoint.
+     Tells the Wazuh agent to read the Sysmon Operational event channel.
+     Restart the agent afterwards: Restart-Service -Name wazuh -->
+<localfile>
+  <location>Microsoft-Windows-Sysmon/Operational</location>
+  <log_format>eventchannel</log_format>
+</localfile>

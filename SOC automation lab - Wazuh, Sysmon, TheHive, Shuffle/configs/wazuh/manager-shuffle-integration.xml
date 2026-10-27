@@ -1,0 +1,12 @@
+<!-- Added to /var/ossec/etc/ossec.conf on the Wazuh manager (Wazuhlab1).
+     Forwards alerts to the Shuffle webhook. The webhook ID is a secret, so it is redacted here.
+     An earlier version had <rule_id>100009</rule_id>, a rule that never fires, which is why
+     nothing reached Shuffle at first. -->
+<integration>
+  <name>shuffle</name>
+  <hook_url>https://<shuffle-host>/api/v1/hooks/<redacted></hook_url>
+  <alert_format>json</alert_format>
+</integration>
+
+<!-- Also enabled in the same file so every raw event is archived, not only alerts:
+     <logall_json>yes</logall_json>  (inside <global>) -->

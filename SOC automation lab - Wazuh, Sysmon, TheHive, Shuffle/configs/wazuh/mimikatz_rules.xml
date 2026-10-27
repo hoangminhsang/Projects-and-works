@@ -1,0 +1,29 @@
+<group name="local,syslog,sshd,">
+  <rule id="100002" level="15">
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.originalFileName" type="pcre2">(?i)mimikatz\.exe</field>
+    <description>Mimikatz Usage Detected</description>
+    <mitre>
+      <id>T1003</id>
+    </mitre>
+  </rule>
+
+  <rule id="100003" level="15">
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)(mimikatz|sekurlsa::|lsadump::|privilege::debug)</field>
+    <description>Mimikatz command-line activity detected</description>
+    <mitre>
+      <id>T1003</id>
+    </mitre>
+  </rule>
+
+  <rule id="100005" level="15">
+    <decoded_as>windows_eventchannel</decoded_as>
+    <field name="win.system.providerName">Microsoft-Windows-Sysmon</field>
+    <field name="win.eventdata.originalFileName" type="pcre2">(?i)mimikatz\.exe</field>
+    <description>Mimikatz detected (Sysmon, any event type)</description>
+    <mitre>
+      <id>T1003</id>
+    </mitre>
+  </rule>
+</group>
