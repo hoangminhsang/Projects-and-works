@@ -46,7 +46,11 @@ I configured and tested network and server services using Ubuntu, Linux clients,
 
 ## Reports
 
-- **Project 1:** *IT Infrastructure and Network Services Projects* — architecture, protocols, traffic flows, threat modeling, and security recommendations.
-- **Project 2:** *Ubuntu Server, DHCP and DNS*; *Web, Mail, Active Directory and VLANs*; and *NFS, Account Permissions and Snort* — implementation reports with configuration screenshots.
+| Project | Report | Format |
+| --- | --- | --- |
+| 1 | Network design, protocols, traffic flows, threat modeling, and security recommendations | [PDF](Network%20Design%20and%20Security%20Architecture.pdf) |
+| 2 | Ubuntu Server, DHCP and DNS | [PDF](Ubuntu%20Server%2C%20DHCP%20and%20DNS.pdf) · [DOCX](Ubuntu%20Server%2C%20DHCP%20and%20DNS.docx) |
+| 2 | Web, Mail, Active Directory and VLANs | [PDF](Web%2C%20Mail%2C%20Active%20Directory%20and%20VLANs.pdf) · [DOCX](Web%2C%20Mail%2C%20Active%20Directory%20and%20VLANs.docx) |
+| 2 | NFS, Account Permissions and Snort | [PDF](NFS%2C%20Account%20Permissions%20and%20Snort.pdf) · [DOCX](NFS%2C%20Account%20Permissions%20and%20Snort.docx) |
 
-The reports remain offline while their screenshots are reviewed for credentials and personal details. This README summarizes the work for hiring review without publishing those screenshots.
+The reports contain lab screenshots, including example IP addresses, accounts, and passwords. These values are part of the documented exercises and should not be reused in a live environment.
