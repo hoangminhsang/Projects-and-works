@@ -1,26 +1,52 @@
-# IT Infrastructure and Network Services
+# Network Architecture and IT Infrastructure Portfolio
 
-This project documents the design and implementation of an on-premises network for a growing e-commerce business with a headquarters and three branches. The reports cover network architecture, core services, identity and access, file sharing, and intrusion detection. Screenshots in the lab reports record the configuration steps and observed results.
+This portfolio describes **two separate projects**. Project 1 is an enterprise network architecture and security design for a fictional e-commerce company. Project 2 is a set of hands-on IT infrastructure configuration labs. Both used simulated or lab environments, rather than production systems.
 
-## Project contents
+## Project 1 — IT Infrastructure and Network Services
 
-| Report | Coverage |
+### What I did
+
+I designed an on-premises network for a headquarters in Hanoi and three branches in Sapa, Saigon, and Hung Yen. I mapped the topology and traffic flows, separated employee networks from server and public-facing zones, selected architectures for each site, documented protocol configurations, and assessed threats using trust boundaries, attack trees, and a risk table.
+
+### Architecture
+
+- **Headquarters internal network:** a three-tier campus architecture with core, distribution, and access layers. The core provides redundant high-speed connections, the distribution layer connects network segments and applies policy, and the access layer connects users and devices.
+- **Headquarters data center and DMZ:** a spine-and-leaf architecture with multiple paths between switches. The DMZ separates public-facing web, mail, and file services from the private network.
+- **Branches:** two-tier LAN architectures for the three smaller sites.
+- **WAN edge:** two headquarters edge routers are included for connectivity and resilience toward the ISP.
+
+### Protocols and technologies
+
+| Area | Configuration or design choice | Purpose |
+| --- | --- | --- |
+| Segmentation and resilience | VLANs, Spanning Tree Protocol (STP), Hot Standby Router Protocol (HSRP) | Separate departments and server zones, avoid Layer 2 loops, and provide redundant default gateways. |
+| Routing | Open Shortest Path First (OSPF), Border Gateway Protocol (BGP), route redistribution | Route within sites and exchange routes between the internal and simulated external networks. |
+| Business services | HTTP, FTP, SMTP, POP3, DNS | Support web, file transfer, email, and name resolution in the network design. |
+| Security | Firewall access lists, HTTPS/SMTPS/FTPS, site-to-site VPN, port security, PortFast/BPDU Guard, Dynamic ARP Inspection, DHCP snooping, AAA, SSH, Syslog | Protect traffic and management access, reduce common Layer 2 attacks, and centralize event logging. |
+
+The report includes protocol configuration examples and **proposed security controls**. Recommendations should not be read as verified deployments at every site.
+
+**Skills demonstrated:** enterprise network design, campus and data-center architecture, VLAN planning, routing and redundancy, segmentation, threat modeling, risk assessment, and security-control selection.
+
+## Project 2 — IT Infrastructure Configuration Labs
+
+### What I did
+
+I configured and tested network and server services using Ubuntu, Linux clients, Windows, and Cisco Packet Tracer. The three reports document each step with screenshots and selected verification results.
+
+| Lab | Configuration and evidence |
 | --- | --- |
-| Network design | Branch and headquarters topology, VLANs, redundancy, server zones, traffic flows, threats, and proposed security controls. |
-| Ubuntu Server, DHCP and DNS | Ubuntu Server setup, DHCP address allocation, DNS configuration, and client checks. |
-| Web, Mail, Active Directory and VLANs | Apache web hosting, Postfix mail relay, Samba domain services, and switch/router VLAN configuration. |
-| NFS, Account Permissions and Snort | NFS exports and mounts, Linux users and groups, directory permissions and ACLs, and Snort rules and alert testing. |
+| Ubuntu Server, DHCP and DNS | Installed and configured ISC DHCP Server and DNS, adjusted service and firewall settings, and checked client address assignment and name resolution. |
+| Web, mail, directory, and VLANs | Configured Apache and tested a modified web page locally and from a client; configured Postfix SMTP relay and checked delivery of a test email; provisioned a Samba Active Directory domain controller with Kerberos and tested a Windows domain client; configured switch management, SSH, access lists, VLAN ports, an IEEE 802.1Q trunk, router subinterfaces, and connectivity checks. |
+| NFS, permissions, and intrusion detection | Exported and mounted NFS shares; created users, groups, department directories, file permissions, POSIX ACLs, and sudo rules; installed Snort, wrote five custom alert rules, validated the configuration, and observed an ICMP alert from a client ping. |
 
-The reports are currently kept offline while their screenshots are reviewed for credentials and other personal details.
+**Protocols and technologies practiced:** DHCP, DNS, HTTP, SMTP, Samba/SMB, Kerberos, VLANs, IEEE 802.1Q, inter-VLAN routing, SSH, NFS, Linux permissions and ACLs, and Snort. The Snort report verifies the ICMP rule; it does not show individual traffic tests for the other four rules.
 
-## What the lab demonstrates
+**Skills demonstrated:** Linux server administration, service configuration and troubleshooting, client/server testing, Windows domain integration, switch and router configuration, identity and access management, shared storage, intrusion detection, and technical documentation.
 
-- Network segmentation and routing between VLANs.
-- Address assignment and name resolution for clients.
-- Web, mail, and directory services on Linux.
-- Shared storage and access controls for different user groups.
-- Basic intrusion detection using custom Snort rules.
+## Reports
 
-## Evidence and scope
+- **Project 1:** *IT Infrastructure and Network Services Projects* — architecture, protocols, traffic flows, threat modeling, and security recommendations.
+- **Project 2:** *Ubuntu Server, DHCP and DNS*; *Web, Mail, Active Directory and VLANs*; and *NFS, Account Permissions and Snort* — implementation reports with configuration screenshots.
 
-The reports contain configuration screenshots and selected verification output from a lab environment. A successful command or service status shows the result of that step; it does not by itself establish production readiness. The Snort section demonstrates an ICMP alert, while the other custom rules are documented but not individually tested in the report. IP addresses, account names, and passwords shown in screenshots are lab examples and should not be reused in a live environment.
+The reports remain offline while their screenshots are reviewed for credentials and personal details. This README summarizes the work for hiring review without publishing those screenshots.
