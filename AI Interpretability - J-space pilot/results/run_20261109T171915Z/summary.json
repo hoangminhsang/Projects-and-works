@@ -1,0 +1,59 @@
+{
+  "run_id": "run_20261109T171915Z",
+  "full_experimental_run": false,
+  "outcome": {
+    "code": "C",
+    "label": "Invalid or nonspecific test",
+    "reasons": [
+      "random control not matched to J-ablation in L2 norm"
+    ]
+  },
+  "accuracy_strict": {
+    "integration": {
+      "baseline": 0.8333333333333334,
+      "j_ablation": 0.9166666666666666,
+      "random_ablation": 0.8333333333333334
+    },
+    "retrieval": {
+      "baseline": 1.0,
+      "j_ablation": 1.0,
+      "random_ablation": 1.0
+    }
+  },
+  "specificity": {
+    "estimate": -0.08333333333333333,
+    "ci_low": -0.2916666666666667,
+    "ci_high": 0.125,
+    "n_scenarios": 24,
+    "n_bootstrap": 2000,
+    "ci_level": 0.95
+  },
+  "controls_matched": false,
+  "baseline_feasible_dev": true,
+  "neutral_nll": {
+    "baseline": 1.7985849443650404,
+    "j_ablation": 1.9799397954877638,
+    "random_ablation": 1.8825356186620448
+  },
+  "chosen_band": {
+    "name": "medium",
+    "first_layer": 12,
+    "last_layer": 17
+  },
+  "acceptance_checklist": {
+    "toy maths checks pass (autograd Jacobian, R^2 ablation, projection invariants)": true,
+    "scenario labels deterministic and assertions pass": true,
+    "same scenario+task prompt identical across 3 conditions": true,
+    "no-op hook == no hook (within tolerance)": true,
+    "J-lens artifact compatible and readouts valid": true,
+    "J-intervention measurably changes activations": true,
+    "norm-matched random control: ||delta_R|| == ||delta_J|| (L2)": false,
+    "hooks never persist (enforced by residual_edits context manager)": true,
+    "test split not used for tuning (protocol frozen before test run)": true,
+    "invalid outputs counted as incorrect, not dropped": true,
+    "accuracy and S computed from observed held-out trials": true,
+    "bootstrap resamples scenario ids with all 6 cells intact": true,
+    "scope claim: top-k J-lens-direction projection, not sparse J-space decomposition": true
+  },
+  "scope": "top-k J-lens-direction projection over a layer band at one decision step; not sparse J-space decomposition; not a consciousness test"
+}

@@ -1,0 +1,113 @@
+======================================================================
+WHY THE PILOT IS INCONCLUSIVE, AND WHY IT WAS NOT RE-RUN
+======================================================================
+
+Run: run_20261109T182530Z (v2, minimum run, 4 test scenarios)
+
+----------------------------------------------------------------------
+1. WHAT HAPPENED
+----------------------------------------------------------------------
+
+The pipeline worked as designed, and all 13 acceptance checks passed:
+  - the lens validated against the model;
+  - the "do-nothing" hooks changed nothing;
+  - the random control matched the J edit size exactly;
+  - the protocol was frozen before the test run.
+
+The result is INCONCLUSIVE, not negative. It neither supports nor
+rejects the hypothesis, for three reasons that the logged data show
+directly:
+
+  1. The intervention was too weak.
+     Removing the task-concept J-lens directions changed the model's
+     internal state by only about 0.6% (cosine 0.9997 before vs after).
+     Loss on plain text did not change. The J edit and the random edit
+     of the same size had the same tiny effect on confidence (about
+     +-0.3 log units). The facts are also written in the prompt itself
+     (for example "backup_ready": true), so the model can read them
+     again through attention.
+
+  2. The task was too easy for this model (ceiling effect).
+     Baseline accuracy was 100% on the test scenarios, and the model
+     was very confident: the correct letter was about 50-400 times more
+     likely than the best wrong one. Accuracy could only go down, so S
+     had to be 0.
+
+  3. The sample was far too small.
+     With 4 test scenarios, one changed answer moves accuracy by 25
+     points. A real but small effect would be invisible.
+
+The notebook's automatic label "B" (useful negative) does not apply:
+the "B" rule did not check for a ceiling or a minimum sample size. This
+is a known gap and is listed as a fix below.
+
+----------------------------------------------------------------------
+2. WHAT A PROPER TEST NEEDS
+----------------------------------------------------------------------
+
+  a. A stronger, directed intervention. For example, a J-lens coordinate
+     swap of "true" <-> "false" at the alerted server's backup_ready
+     value (paper §2.5, §3.5.1). If the J-space carries the decision,
+     the combine answer should flip and the copy answer should not.
+  b. A harder task, with baseline accuracy around 70-85%, so effects
+     can be seen.
+  c. At least 12 scenarios per action (48 in total).
+  d. A corrected outcome rule ("B" only with n >= 24 and a baseline
+     below ceiling).
+
+----------------------------------------------------------------------
+3. WHY THESE FIXES WERE NOT RUN WITHIN THE EXAM
+----------------------------------------------------------------------
+
+Time budget
+  - The whole take-home is limited to 5 hours. That includes reading,
+    the working-assumptions write-up, the experimental design, the
+    slides and the video. The task description asks for a design
+    detailed enough for an agent to implement. It explicitly says that
+    implementing the experiment is not required.
+  - Each fix above means writing new code, testing it, running a new
+    pre-registered dev and test run, and analysing the results again.
+    Estimated cost: about 1.5 hours. That would not leave enough time
+    for the slides and the video.
+
+Hardware (measured, see run_log.txt)
+  - All runs used my own laptop: one NVIDIA RTX 5060 Laptop GPU with
+    8 GB VRAM, and 15 GB of system RAM, under WSL2.
+  - The model (Qwen3.5-4B, about 9 GB in bf16) does not fit in 8 GB.
+    Quantising it was not an option, because the pre-fitted lens
+    matches the bf16 activations. So at most 12 of 32 layers fit on the
+    GPU, and the rest were streamed from CPU RAM for every forward
+    pass. In the final run, 0 of 32 layers fit on the GPU.
+  - Measured speed: about 26 seconds per scenario with 12 layers on the
+    GPU.
+      4 test scenarios  ->  about 2 minutes   (what was run)
+      48 test scenarios ->  about 21 minutes  (+ model loading and dev selection)
+      96 test scenarios ->  about 42 minutes  (a run at this size was
+                            started and stopped after 2 scenarios
+                            because of the time it needed)
+    Every design change also requires a new dev run to select the layer
+    band.
+
+[KEEP ONLY IF TRUE - remove this line and the bracket otherwise]
+Cloud notebooks
+  - The notebook is ready for Google Colab (L4 / A100 GPU), where the
+    whole model fits on the GPU and the 48-scenario run would take a
+    few minutes. During the exam window, Google Colab and Kaggle
+    notebooks were unavailable to me because of service errors or
+    maintenance, so I could not use a larger GPU.
+
+----------------------------------------------------------------------
+4. WHAT THIS PILOT STILL DELIVERS
+----------------------------------------------------------------------
+
+  - A working, tested pipeline on a real open-weight model with the
+    official Jacobian lens: 33 unit tests, toy maths checks, hook
+    identity checks, a matched control, a frozen protocol and full logs.
+  - A first observation: the task concepts are clearly visible in the
+    J-lens readout (about 800-1000 sites per prompt), but their
+    token-level directions carry very little of the activation.
+  - A clear and cheap next step. The pipeline only needs the swap
+    intervention added and n_test_per_action raised to 12. With a
+    suitable GPU, the full run takes minutes.
+
+======================================================================

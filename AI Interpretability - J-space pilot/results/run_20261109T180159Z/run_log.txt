@@ -1,0 +1,4 @@
+18:01:59 | INFO    | jspace_pilot | run run_20261109T180159Z -> /home/kali/Desktop/Anthropic_reserach/takehome_v3/experiment/results/run_20261109T180159Z
+18:02:00 | INFO    | jspace_pilot.model_io | VRAM free 3.17 GiB | fixed 2.37 GiB | per block 0.210 GiB | reserve 1.8 GiB -> 0/32 blocks on GPU
+18:02:01 | WARNING | accelerate.big_modeling | Some parameters are on the meta device because they were offloaded to the cpu.
+18:02:01 | INFO    | jspace_pilot | model loaded in 2s | 0/32 blocks on GPU | d_model=2560

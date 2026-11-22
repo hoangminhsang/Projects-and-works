@@ -1,0 +1,218 @@
+======================================================================
+EXPERIMENT REPORT
+Does removing "J-lens directions" hurt an AI agent's ability to combine
+information from several tools?
+======================================================================
+
+Run ID     : run_20261109T171915Z
+Model      : Qwen/Qwen3.5-4B (open weights, 32 layers)
+Lens       : official pre-fitted Jacobian lens (neuronpedia/jacobian-lens, qwen-n1000)
+Data       : 24 test scenarios x 2 tasks x 3 conditions = 144 trials
+             (+ 6 practice "dev" scenarios used only for set-up)
+Run time   : about 6 minutes for the 144 test trials
+
+----------------------------------------------------------------------
+1. SHORT SUMMARY
+----------------------------------------------------------------------
+
+- The pipeline worked. The maths checks, the lens checks and the hook
+  checks all passed.
+- Removing J-lens directions did NOT make the model worse at combining
+  information. It got very slightly better (20/24 -> 22/24 correct), and
+  that small change is most likely noise.
+- The run is marked INVALID (outcome "C"), for two reasons:
+    (a) The random control changed the model 1.68 times more than the
+        J-lens edit, instead of exactly the same amount. This was a bug
+        in the code.
+    (b) The J-lens directions we removed were mostly formatting tokens
+        (like "end of message" or blank lines), not the ideas the
+        decision needs.
+- Conclusion: this run tells us nothing yet about the "global workspace"
+  idea or about AI welfare. It does tell us exactly what to fix.
+
+----------------------------------------------------------------------
+2. THE QUESTION
+----------------------------------------------------------------------
+
+A theory of consciousness called "Global Workspace Theory" says that a
+mind has a small shared space where information is put together for
+flexible thinking. Simple, automatic tasks do not need that space.
+
+A 2026 paper (Gurnee et al.) found something similar inside language
+models. They called it the "J-space" and found it with a tool called the
+Jacobian lens (J-lens). Removing it hurt flexible reasoning, but not
+simple copying.
+
+Our question: is the same true for an AI agent that must COMBINE facts
+from several tools to make a decision?
+
+  H1 (what we tested for): removing J-lens directions hurts COMBINING
+      facts more than COPYING a fact, and more than a random change
+      of the same size does.
+  H0 (null): we cannot see such a difference.
+
+----------------------------------------------------------------------
+3. HOW THE EXPERIMENT WORKS (WITH AN EXAMPLE)
+----------------------------------------------------------------------
+
+A simple scripted "agent" calls 3 fake tools about one server:
+
+  Tool 1: {"server_id": "FIN-12", "risk": "high"}
+  Tool 2: {"server_id": "FIN-12", "critical_service": true}
+  Tool 3: {"server_id": "FIN-12", "backup_ready": true, "backup_id": "BK-07"}
+
+Then we ask the model ONE of two questions about the SAME memory:
+
+  Integration task (combining):
+    "Which action is correct?"
+    The model must combine 3 facts with the rules:
+    high risk + critical + backup ready  ->  "fail over, then isolate"
+
+  Retrieval task (copying):
+    "Which backup_id did tool 3 return?"
+    The model only needs to copy one value: "BK-07"
+
+Every question has 4 options (A, B, C, D). We read the model's very
+first output token as its answer.
+
+Each question is run under 3 conditions:
+
+  C0 baseline : the model as normal
+  C1 J-ablation : at layers 12-17, at every word position, we remove the
+                  10 strongest J-lens directions from the model's
+                  internal state
+  C2 random   : the same layers and positions, but a random change of
+                  the (intended) same size
+
+The main score, S:
+  S = (how much more J hurts combining than random does)
+    - (how much more J hurts copying than random does)
+
+  S > 0  supports H1.   S near 0: no effect seen.   S < 0: the opposite.
+
+----------------------------------------------------------------------
+4. CHECKS THAT PASSED (THE TOOLS WORK)
+----------------------------------------------------------------------
+
+  Toy maths tests (Jacobian, small 2-D example, projection)  : all pass
+  Lens matches the model (top-10 words agree with jlens)     : 99% and 95%
+  "Do-nothing" hook changes nothing                         : difference = 0.0
+  Same prompt used in all 3 conditions                      : yes
+  Model can do the task normally (needed at least 70%)      : 83% / 100%
+  Test data not used for tuning                             : yes
+
+So the measuring equipment is working. The problems are in the design
+(section 6), not in broken code paths.
+
+----------------------------------------------------------------------
+5. RESULTS
+----------------------------------------------------------------------
+
+Accuracy on the 24 test scenarios:
+
+                      Integration (combine)   Retrieval (copy)
+  C0 baseline            0.83  (20/24)          1.00  (24/24)
+  C1 J-ablation          0.92  (22/24)          1.00  (24/24)
+  C2 random              0.83  (20/24)          1.00  (24/24)
+
+Score S:
+  S = (0.83 - 0.92) - (1.00 - 1.00) = -0.08
+  95% confidence interval: from -0.29 to +0.13
+
+What this means in plain words:
+  - H1 expected integration to DROP under J-ablation. It did not. It went
+    up a little: J-ablation fixed 4 wrong answers and broke 2.
+  - The interval includes 0, so the small rise is most likely chance.
+  - Retrieval was 100% in every condition, so it could not drop at all.
+
+Other measurements:
+  - The edit was small: about 10% of the size of the internal state.
+  - On plain everyday text, J-ablation made prediction 10% worse, and
+    random made it 5% worse (even though random was the bigger change).
+    So J-lens directions DO matter for normal text, just not for this
+    decision.
+  - All 4 mistakes the normal model made were the answer "C". When the
+    model is unsure, it seems to guess "C". It found the "monitor" and
+    "contain and plan" cases hardest.
+
+----------------------------------------------------------------------
+6. WHY THE RUN IS INVALID
+----------------------------------------------------------------------
+
+Problem 1: the random control was too big (a code bug)
+
+  The random change was meant to be exactly the same size as the J
+  change. It was 1.68 times bigger on average.
+
+  Why: the random hook measured "how much would J remove here?" on its
+  OWN already-changed state. The random noise added at layer 12 made the
+  state bigger at layer 13, so the next measurement was bigger, and this
+  repeated through 6 layers.
+
+  Example: at layer 14, the J edit removed 0.89, but the random edit
+  added 1.35.
+
+  The automatic checklist caught this and marked the run invalid, which
+  is what it is designed to do.
+
+Problem 2: we removed the wrong directions
+
+  At the answer position, the 10 J-lens words we removed were:
+
+    <|endoftext|>  blank-line  <|im_end|>  **  ...  \  <|file_sep|>  the
+
+  These are formatting and "end of message" signals, not ideas like
+  "backup", "critical" or "isolate". So the edit mostly removed "I'm
+  about to finish writing" signals, not the decision content. This
+  probably explains why integration was not hurt.
+
+Problem 3: the copying task was too easy
+
+  Retrieval was 100% everywhere, so it could never show a drop. Half of
+  the comparison inside S carried no information.
+
+----------------------------------------------------------------------
+7. WHAT WE CAN AND CANNOT CONCLUDE
+----------------------------------------------------------------------
+
+We CAN say:
+  - The full pipeline (dataset, agent, lens, hooks, metrics, logging)
+    works on a real model with a real Jacobian lens.
+  - Removing the top-10 J-lens directions at layers 12-17 did not hurt
+    this 4B model's decisions on this task.
+
+We CANNOT say:
+  - that the J-space plays no role in combining information (the
+    directions removed were mostly formatting, and the control was wrong);
+  - anything about Global Workspace Theory being true or false;
+  - anything about consciousness, feelings or the welfare of AI systems.
+
+----------------------------------------------------------------------
+8. NEXT STEPS (BEFORE A NEW RUN)
+----------------------------------------------------------------------
+
+  1. Fix the control: record the exact size of each J change in C1 and
+     reuse those same sizes in C2.
+  2. Target content: skip special and formatting tokens (<|im_end|>,
+     blank lines, "**", ...) when choosing the 10 directions to remove.
+  3. Make retrieval a bit harder (for example more tool outputs), so it
+     is not stuck at 100%.
+  4. Do a new, pre-registered run with fresh settings fixed BEFORE
+     looking at the new test results. This run's test data was never
+     used for tuning, so these changes are allowed.
+
+----------------------------------------------------------------------
+9. FILES IN THIS FOLDER
+----------------------------------------------------------------------
+
+  trial_results.csv       the 144 test trials, one row each
+  dev_trials.csv          the practice trials used for set-up
+  summary.json            accuracy, S, interval, outcome, checklist
+  validation_log.json     all maths, lens and hook checks
+  frozen_protocol.json    settings saved BEFORE the test run
+  run_metadata.json       model, lens, versions, seeds
+  scenarios.jsonl         the 30 benchmark scenarios
+  run_log.txt             timeline of the run
+  figures/                accuracy chart and S chart
+
+======================================================================

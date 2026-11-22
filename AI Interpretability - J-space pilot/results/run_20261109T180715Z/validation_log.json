@@ -1,0 +1,701 @@
+{
+  "toy_math_checks": {
+    "autograd": {
+      "x": [
+        3.0,
+        2.0
+      ],
+      "f(x)": [
+        8.0,
+        9.0
+      ],
+      "J_analytic": [
+        [
+          2.0,
+          1.0
+        ],
+        [
+          1.0,
+          3.0
+        ]
+      ],
+      "J_autograd": [
+        [
+          2.0,
+          1.0
+        ],
+        [
+          1.0,
+          3.0
+        ]
+      ],
+      "J_finite_difference": [
+        [
+          1.9998549222946167,
+          0.9996890425682068
+        ],
+        [
+          0.9994506239891052,
+          3.0002591609954834
+        ]
+      ],
+      "f(x+delta)-f(x)": [
+        0.19999980926513672,
+        0.10000038146972656
+      ],
+      "J @ delta": [
+        0.20000000298023224,
+        0.10000000149011612
+      ],
+      "autograd_matches_analytic": true,
+      "finite_diff_matches_analytic": true,
+      "taylor_rule_holds": true
+    },
+    "r2_ablation": {
+      "J": [
+        [
+          2.0,
+          1.0
+        ],
+        [
+          1.0,
+          3.0
+        ]
+      ],
+      "h": [
+        3.0,
+        2.0
+      ],
+      "w_token": [
+        1.0,
+        -1.0
+      ],
+      "J h": [
+        8.0,
+        9.0
+      ],
+      "score_before = w.(J h)": -1.0,
+      "v = J^T w": [
+        1.0,
+        -2.0
+      ],
+      "v.h (should equal score)": -1.0,
+      "projection of h on v": [
+        -0.20000000298023224,
+        0.4000000059604645
+      ],
+      "h_ablated": [
+        3.200000047683716,
+        1.600000023841858
+      ],
+      "v.h_ablated": 0.0,
+      "||h_ablated - h||": 0.4472135901451111,
+      "J h_ablated": [
+        8.0,
+        8.0
+      ],
+      "score_after = w.(J h_ablated)": 0.0
+    },
+    "invariants": {
+      "v has shape [d]": true,
+      "w^T diag(g) J h == v . h": true,
+      "alpha=0 leaves h unchanged": true,
+      "alpha=1 gives v . h_new ~ 0": true,
+      "k=1 span projection == remove_direction": true,
+      "residual orthogonal to every selected vector": true,
+      "projection is idempotent (P P h = P h)": true,
+      "duplicate/near-duplicate vectors: same projection": true,
+      "duplicate/near-duplicate vectors: rank stays k": true,
+      "||delta_random|| == ||delta_J||": true,
+      "no NaN/Inf anywhere": true
+    }
+  },
+  "dataset_checks": [
+    "decision rule correct on all 12 input combinations",
+    "scenario, server and backup ids are unique (no dev/test overlap)",
+    "test split balanced: 24 scenarios per semantic action",
+    "every label comes from expected_action(), not from a model",
+    "every question has exactly 4 options (A-D) and exactly 1 correct option",
+    "option letters match the semantic answers after shuffling",
+    "retrieval answer = tool 3 entry of the alerted server; decoy ids from memory are wrong options",
+    "memory is identical for both tasks of a scenario; no answer key in prompts"
+  ],
+  "concept_tokens": {
+    "high": [
+      "' High'",
+      "'High'",
+      "'high'",
+      "' high'"
+    ],
+    "low": [
+      "'low'",
+      "'Low'",
+      "' Low'",
+      "' low'"
+    ],
+    "medium": [
+      "' medium'",
+      "'Medium'",
+      "' Medium'",
+      "'medium'"
+    ],
+    "risk": [
+      "' risk'",
+      "' Risk'",
+      "'risk'",
+      "'Risk'"
+    ],
+    "critical": [
+      "' critical'",
+      "'critical'",
+      "'Critical'",
+      "' Critical'"
+    ],
+    "service": [
+      "' service'",
+      "'service'",
+      "' Service'",
+      "'Service'"
+    ],
+    "backup": [
+      "'Backup'",
+      "' Backup'",
+      "'backup'",
+      "' backup'"
+    ],
+    "ready": [
+      "' ready'",
+      "'ready'",
+      "' Ready'",
+      "'Ready'"
+    ],
+    "isolate": [
+      "' isolate'"
+    ],
+    "isolation": [
+      "' isolation'"
+    ],
+    "monitor": [
+      "'Monitor'",
+      "' monitor'",
+      "'monitor'",
+      "' Monitor'"
+    ],
+    "monitoring": [
+      "' monitoring'",
+      "' Monitoring'",
+      "'Monitoring'"
+    ],
+    "fail": [
+      "'Fail'",
+      "' fail'",
+      "'fail'",
+      "' Fail'"
+    ],
+    "failover": [],
+    "revoke": [
+      "' revoke'"
+    ],
+    "credentials": [
+      "' Credentials'",
+      "'Credentials'",
+      "' credentials'",
+      "'credentials'"
+    ],
+    "safe": [
+      "' Safe'",
+      "'Safe'",
+      "' safe'",
+      "'safe'"
+    ],
+    "true": [
+      "' true'",
+      "'True'",
+      "' True'",
+      "'true'"
+    ],
+    "false": [
+      "' False'",
+      "' false'",
+      "'False'",
+      "'false'"
+    ]
+  },
+  "concept_localization_dev_mean_sites_by_layer": {
+    "8": 24.5,
+    "9": 27.12,
+    "10": 39.5,
+    "11": 43.69,
+    "12": 36.69,
+    "13": 43.25,
+    "14": 49.19,
+    "15": 57.75,
+    "16": 43.19,
+    "17": 47.44,
+    "18": 46.06,
+    "19": 38.94,
+    "20": 45.94,
+    "21": 61.12,
+    "22": 71.5,
+    "23": 122.69,
+    "24": 119.38
+  },
+  "baseline_dev": {
+    "integration": 0.875,
+    "retrieval": 1.0
+  },
+  "baseline_feasible": true,
+  "hook_checks_before_lens": {
+    "repeat_max_abs_diff": 0.0,
+    "noop_max_abs_diff": 0.0,
+    "tolerance": 0.001,
+    "passed": true
+  },
+  "lens": {
+    "is_valid": true,
+    "local_path": "/home/kali/.cache/huggingface/hub/models--neuronpedia--jacobian-lens/snapshots/16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a/qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt",
+    "file_sha256": "1f9a8f8fd593f0ffec1a9640993257ca4560f8ae3e5602315643d5cc6818534e",
+    "checks": {
+      "lens_d_model": 2560,
+      "model_d_model": 2560,
+      "lens_source_layers": "0..30 (31 layers)",
+      "lens_n_prompts": 1000,
+      "d_model_matches": true,
+      "required_layers": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24
+      ],
+      "required_layers_present": true,
+      "jacobians_finite": true,
+      "jacobian_fro_norm_over_sqrt_d": {
+        "8": 0.841,
+        "9": 0.892,
+        "10": 0.928,
+        "11": 1.004,
+        "12": 1.055,
+        "13": 1.101,
+        "14": 1.123,
+        "15": 1.166,
+        "16": 1.166,
+        "17": 1.202,
+        "18": 1.139,
+        "19": 1.11,
+        "20": 1.16,
+        "21": 1.201,
+        "22": 1.277,
+        "23": 1.309,
+        "24": 1.357
+      },
+      "final_norm_offdiag_ratio": 0.0,
+      "final_norm_is_diagonal": true,
+      "basis_vs_jlens_top10_overlap_L8": 1.0,
+      "basis_vs_jlens_top10_overlap_L24": 1.0
+    },
+    "error": null
+  },
+  "band_selection": [
+    {
+      "band": "wide",
+      "layers": "8-24",
+      "acceptable": true,
+      "j_retrieval_acc": 1.0,
+      "j_integration_acc": 0.875,
+      "j_valid_rate": 1.0,
+      "mean_concept_sites": 917.9375
+    }
+  ],
+  "hook_checks_with_band": {
+    "repeat_max_abs_diff": 0.0,
+    "noop_max_abs_diff": 0.0,
+    "alpha0_max_abs_diff": 0.0,
+    "alpha0_hook_fired": true,
+    "tolerance": 0.001,
+    "passed": true
+  },
+  "intervention_diagnostics_one_dev_prompt": {
+    "concept_sites_per_layer": {
+      "8": 27,
+      "9": 31,
+      "10": 47,
+      "11": 49,
+      "12": 41,
+      "13": 48,
+      "14": 52,
+      "15": 64,
+      "16": 48,
+      "17": 50,
+      "18": 50,
+      "19": 45,
+      "20": 54,
+      "21": 69,
+      "22": 83,
+      "23": 135,
+      "24": 132
+    },
+    "concepts_found": "backup:635, monitoring:276, risk:258, monitor:203, safe:140, critical:96, fail:94, false:84, true:69, isolation:65",
+    "j_ablation": [
+      {
+        "layer": 8,
+        "sites_edited": "27/422",
+        "mean_||h||": 6.63,
+        "mean_||delta||": 0.0813,
+        "mean_||delta_J (C1)||": 0.0813,
+        "mean_cos(h,h_new)": 0.99893,
+        "rank(J vectors)": 1.48,
+        "random_in_J_span": 0.0
+      },
+      {
+        "layer": 9,
+        "sites_edited": "31/422",
+        "mean_||h||": 7.17,
+        "mean_||delta||": 0.0373,
+        "mean_||delta_J (C1)||": 0.0373,
+        "mean_cos(h,h_new)": 0.99975,
+        "rank(J vectors)": 1.87,
+        "random_in_J_span": 0.0
+      },
+      {
+        "layer": 10,
+        "sites_edited": "47/422",
+        "mean_||h||": 7.77,
+        "mean_||delta||": 0.0614,
+        "mean_||delta_J (C1)||": 0.0614,
+        "mean_cos(h,h_new)": 0.99964,
+        "rank(J vectors)": 1.83,
+        "random_in_J_span": 0.0
+      },
+      {
+        "layer": 11,
+        "sites_edited": "49/422",
+        "mean_||h||": 8.09,
+        "mean_||delta||": 0.0339,
+        "mean_||delta_J (C1)||": 0.0339,
+        "mean_cos(h,h_new)": 0.99983,
+        "rank(J vectors)": 1.86,
+        "random_in_J_span": 0.0
+      },
+      {
+        "layer": 12,
+        "sites_edited": "41/422",
+        "mean_||h||": 8.14,
+        "mean_||delta||": 0.03,
+        "mean_||delta_J (C1)||": 0.03,
+        "mean_cos(h,h_new)": 0.9999,
+        "rank(J vectors)": 1.95,
+        "random_in_J_span": 0.0
+      },
+      {
+        "layer": 13,
+        "sites_edited": "48/422",
+        "mean_||h||": 8.82,
+        "mean_||delta||": 0.0286,
+        "mean_||delta_J (C1)||": 0.0286,
+        "mean_cos(h,h_new)": 0.99991,
+        "rank(J vectors)": 1.75,
+        "random_in_J_span": 0.0
+      },
+      {
+        "layer": 14,
+        "sites_edited": "52/422",
+        "mean_||h||": 9.61,
+        "mean_||delta||": 0.0419,
+        "mean_||delta_J (C1)||": 0.0419,
+        "mean_cos(h,h_new)": 0.99986,
+        "rank(J vectors)": 1.73,
+        "random_in_J_span": 0.0
+      },
+      {
+        "layer": 15,
+        "sites_edited": "64/422",
+        "mean_||h||": 10.18,
+        "mean_||delta||": 0.0448,
+        "mean_||delta_J (C1)||": 0.0448,
+        "mean_cos(h,h_new)": 0.99987,
+        "rank(J vectors)": 1.7,
+        "random_in_J_span": 0.0
+      },
+      {
+        "layer": 16,
+        "sites_edited": "48/422",
+        "mean_||h||": 10.59,
+        "mean_||delta||": 0.0218,
+        "mean_||delta_J (C1)||": 0.0218,
+        "mean_cos(h,h_new)": 0.99998,
+        "rank(J vectors)": 1.77,
+        "random_in_J_span": 0.0
+      },
+      {
+        "layer": 17,
+        "sites_edited": "50/422",
+        "mean_||h||": 11.44,
+        "mean_||delta||": 0.0336,
+        "mean_||delta_J (C1)||": 0.0336,
+        "mean_cos(h,h_new)": 0.99993,
+        "rank(J vectors)": 1.84,
+        "random_in_J_span": 0.0
+      },
+      {
+        "layer": 18,
+        "sites_edited": "50/422",
+        "mean_||h||": 13.19,
+        "mean_||delta||": 0.0447,
+        "mean_||delta_J (C1)||": 0.0447,
+        "mean_cos(h,h_new)": 0.99992,
+        "rank(J vectors)": 1.8,
+        "random_in_J_span": 0.0
+      },
+      {
+        "layer": 19,
+        "sites_edited": "45/422",
+        "mean_||h||": 15.97,
+        "mean_||delta||": 0.0629,
+        "mean_||delta_J (C1)||": 0.0629,
+        "mean_cos(h,h_new)": 0.99988,
+        "rank(J vectors)": 1.44,
+        "random_in_J_span": 0.0
+      },
+      {
+        "layer": 20,
+        "sites_edited": "54/422",
+        "mean_||h||": 17.63,
+        "mean_||delta||": 0.095,
+        "mean_||delta_J (C1)||": 0.095,
+        "mean_cos(h,h_new)": 0.99982,
+        "rank(J vectors)": 1.83,
+        "random_in_J_span": 0.0
+      },
+      {
+        "layer": 21,
+        "sites_edited": "69/422",
+        "mean_||h||": 19.79,
+        "mean_||delta||": 0.1485,
+        "mean_||delta_J (C1)||": 0.1485,
+        "mean_cos(h,h_new)": 0.99971,
+        "rank(J vectors)": 2.04,
+        "random_in_J_span": 0.0
+      },
+      {
+        "layer": 22,
+        "sites_edited": "83/422",
+        "mean_||h||": 23.05,
+        "mean_||delta||": 0.2163,
+        "mean_||delta_J (C1)||": 0.2163,
+        "mean_cos(h,h_new)": 0.99964,
+        "rank(J vectors)": 2.27,
+        "random_in_J_span": 0.0
+      },
+      {
+        "layer": 23,
+        "sites_edited": "135/422",
+        "mean_||h||": 25.79,
+        "mean_||delta||": 0.6742,
+        "mean_||delta_J (C1)||": 0.6742,
+        "mean_cos(h,h_new)": 0.9985,
+        "rank(J vectors)": 2.71,
+        "random_in_J_span": 0.0
+      },
+      {
+        "layer": 24,
+        "sites_edited": "132/422",
+        "mean_||h||": 27.63,
+        "mean_||delta||": 0.2065,
+        "mean_||delta_J (C1)||": 0.2065,
+        "mean_cos(h,h_new)": 0.99977,
+        "rank(J vectors)": 2.74,
+        "random_in_J_span": 0.0
+      }
+    ],
+    "random_ablation": [
+      {
+        "layer": 8,
+        "sites_edited": "27/422",
+        "mean_||h||": 6.63,
+        "mean_||delta||": 0.0813,
+        "mean_||delta_J (C1)||": 0.0813,
+        "mean_cos(h,h_new)": 0.99897,
+        "rank(J vectors)": 1.48,
+        "random_in_J_span": 0.0257
+      },
+      {
+        "layer": 9,
+        "sites_edited": "31/422",
+        "mean_||h||": 7.18,
+        "mean_||delta||": 0.0373,
+        "mean_||delta_J (C1)||": 0.0373,
+        "mean_cos(h,h_new)": 0.99976,
+        "rank(J vectors)": 1.87,
+        "random_in_J_span": 0.0214
+      },
+      {
+        "layer": 10,
+        "sites_edited": "47/422",
+        "mean_||h||": 7.79,
+        "mean_||delta||": 0.0614,
+        "mean_||delta_J (C1)||": 0.0614,
+        "mean_cos(h,h_new)": 0.99966,
+        "rank(J vectors)": 1.83,
+        "random_in_J_span": 0.0229
+      },
+      {
+        "layer": 11,
+        "sites_edited": "49/422",
+        "mean_||h||": 8.12,
+        "mean_||delta||": 0.0339,
+        "mean_||delta_J (C1)||": 0.0339,
+        "mean_cos(h,h_new)": 0.99984,
+        "rank(J vectors)": 1.86,
+        "random_in_J_span": 0.0237
+      },
+      {
+        "layer": 12,
+        "sites_edited": "41/422",
+        "mean_||h||": 8.17,
+        "mean_||delta||": 0.03,
+        "mean_||delta_J (C1)||": 0.03,
+        "mean_cos(h,h_new)": 0.99991,
+        "rank(J vectors)": 1.95,
+        "random_in_J_span": 0.0227
+      },
+      {
+        "layer": 13,
+        "sites_edited": "48/422",
+        "mean_||h||": 8.86,
+        "mean_||delta||": 0.0286,
+        "mean_||delta_J (C1)||": 0.0286,
+        "mean_cos(h,h_new)": 0.99992,
+        "rank(J vectors)": 1.75,
+        "random_in_J_span": 0.0219
+      },
+      {
+        "layer": 14,
+        "sites_edited": "52/422",
+        "mean_||h||": 9.67,
+        "mean_||delta||": 0.0419,
+        "mean_||delta_J (C1)||": 0.0419,
+        "mean_cos(h,h_new)": 0.99986,
+        "rank(J vectors)": 1.73,
+        "random_in_J_span": 0.0223
+      },
+      {
+        "layer": 15,
+        "sites_edited": "64/422",
+        "mean_||h||": 10.25,
+        "mean_||delta||": 0.0448,
+        "mean_||delta_J (C1)||": 0.0448,
+        "mean_cos(h,h_new)": 0.99987,
+        "rank(J vectors)": 1.7,
+        "random_in_J_span": 0.0199
+      },
+      {
+        "layer": 16,
+        "sites_edited": "48/422",
+        "mean_||h||": 10.67,
+        "mean_||delta||": 0.0218,
+        "mean_||delta_J (C1)||": 0.0218,
+        "mean_cos(h,h_new)": 0.99998,
+        "rank(J vectors)": 1.77,
+        "random_in_J_span": 0.019
+      },
+      {
+        "layer": 17,
+        "sites_edited": "50/422",
+        "mean_||h||": 11.53,
+        "mean_||delta||": 0.0336,
+        "mean_||delta_J (C1)||": 0.0336,
+        "mean_cos(h,h_new)": 0.99993,
+        "rank(J vectors)": 1.84,
+        "random_in_J_span": 0.0237
+      },
+      {
+        "layer": 18,
+        "sites_edited": "50/422",
+        "mean_||h||": 13.34,
+        "mean_||delta||": 0.0447,
+        "mean_||delta_J (C1)||": 0.0447,
+        "mean_cos(h,h_new)": 0.99993,
+        "rank(J vectors)": 1.8,
+        "random_in_J_span": 0.0202
+      },
+      {
+        "layer": 19,
+        "sites_edited": "45/422",
+        "mean_||h||": 16.18,
+        "mean_||delta||": 0.0629,
+        "mean_||delta_J (C1)||": 0.0629,
+        "mean_cos(h,h_new)": 0.99989,
+        "rank(J vectors)": 1.44,
+        "random_in_J_span": 0.0195
+      },
+      {
+        "layer": 20,
+        "sites_edited": "54/422",
+        "mean_||h||": 17.87,
+        "mean_||delta||": 0.095,
+        "mean_||delta_J (C1)||": 0.095,
+        "mean_cos(h,h_new)": 0.99983,
+        "rank(J vectors)": 1.83,
+        "random_in_J_span": 0.0203
+      },
+      {
+        "layer": 21,
+        "sites_edited": "69/422",
+        "mean_||h||": 20.06,
+        "mean_||delta||": 0.1485,
+        "mean_||delta_J (C1)||": 0.1485,
+        "mean_cos(h,h_new)": 0.99973,
+        "rank(J vectors)": 2.04,
+        "random_in_J_span": 0.0226
+      },
+      {
+        "layer": 22,
+        "sites_edited": "83/422",
+        "mean_||h||": 23.43,
+        "mean_||delta||": 0.2163,
+        "mean_||delta_J (C1)||": 0.2163,
+        "mean_cos(h,h_new)": 0.99966,
+        "rank(J vectors)": 2.27,
+        "random_in_J_span": 0.0264
+      },
+      {
+        "layer": 23,
+        "sites_edited": "135/422",
+        "mean_||h||": 26.32,
+        "mean_||delta||": 0.6742,
+        "mean_||delta_J (C1)||": 0.6742,
+        "mean_cos(h,h_new)": 0.99861,
+        "rank(J vectors)": 2.71,
+        "random_in_J_span": 0.0296
+      },
+      {
+        "layer": 24,
+        "sites_edited": "132/422",
+        "mean_||h||": 28.29,
+        "mean_||delta||": 0.2065,
+        "mean_||delta_J (C1)||": 0.2065,
+        "mean_cos(h,h_new)": 0.9998,
+        "rank(J vectors)": 2.74,
+        "random_in_J_span": 0.029
+      }
+    ]
+  },
+  "neutral_nll": {
+    "baseline": 1.7985849443650404,
+    "j_ablation": 1.7951452495246534,
+    "random_ablation": 1.7958631704974648
+  }
+}

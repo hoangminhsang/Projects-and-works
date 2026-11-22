@@ -1,0 +1,7 @@
+17:19:15 | INFO    | jspace_pilot | run run_20261109T171915Z -> /home/kali/Desktop/Anthropic_reserach/takehome_v3/experiment/results/run_20261109T171915Z
+17:19:59 | WARNING | huggingface_hub.utils._http | Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+17:20:02 | INFO    | jspace_pilot.model_io | VRAM free 6.87 GiB | fixed 2.37 GiB | per block 0.210 GiB | reserve 1.8 GiB -> 12/32 blocks on GPU
+17:22:34 | WARNING | accelerate.big_modeling | Some parameters are on the meta device because they were offloaded to the cpu.
+17:22:34 | INFO    | jspace_pilot | model loaded in 157s | 12/32 blocks on GPU | d_model=2560
+17:24:27 | INFO    | jspace_pilot.lens_setup | loaded JacobianLens(d_model=2560, n_prompts=1000, source_layers=[0..30] (31 layers)) from Qwen3.5-4B_jacobian_lens_n1000.pt
+17:31:54 | INFO    | jspace_pilot | test split: 144 trials in 336s -> /home/kali/Desktop/Anthropic_reserach/takehome_v3/experiment/results/run_20261109T171915Z/trial_results.csv

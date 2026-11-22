@@ -1,0 +1,256 @@
+======================================================================
+EXPERIMENT REPORT (v2, minimum run)
+Does removing task-concept J-lens directions hurt an AI agent's ability
+to combine information from several tools?
+======================================================================
+
+Run ID     : run_20261109T182530Z
+Model      : Qwen/Qwen3.5-4B (open weights, 32 layers)
+Lens       : official pre-fitted Jacobian lens (neuronpedia/jacobian-lens, qwen-n1000)
+Data       : 4 test scenarios x 2 tasks x 3 conditions = 24 trials
+             (+ 4 dev scenarios used only for set-up)
+Run type   : MINIMUM run (1 scenario per action). It shows that the method
+             works. It is far too small to answer the research question.
+Run time   : about 5 minutes in total, 105 seconds for the 24 test trials
+
+----------------------------------------------------------------------
+1. SHORT SUMMARY
+----------------------------------------------------------------------
+
+- Everything worked. All 13 acceptance checks passed. The v1 bug is
+  fixed: the random control is now exactly the same size as the J edit.
+- "Observe first, then intervene" worked. The task concepts DO appear
+  in the J-lens. "backup", "risk", "monitor", "critical", "true" and
+  "false" show up at about 800-1000 places in every prompt.
+- Removing those concept directions changed almost nothing. The model
+  got 24 out of 24 answers right in every condition (baseline, J edit,
+  random edit). Its confidence moved by less than 0.5 log-points, and
+  the J edit and the random edit moved it by about the same amount.
+- Why: the concept directions are a very small part of the model's
+  internal state. Removing them changed that state by only about 0.6%.
+- The notebook's automatic label says outcome "B" (a useful negative).
+  THIS LABEL IS NOT TRUSTWORTHY HERE. Every answer was already 100%
+  correct and there were only 4 scenarios, so nothing could go up or
+  down. See section 7.
+- Conclusion: no evidence for or against the global-workspace
+  prediction yet. The main lesson is that "removing" concept directions
+  is too weak an intervention on this model. Section 9 lists stronger
+  tests.
+
+----------------------------------------------------------------------
+2. THE QUESTION (SAME AS V1)
+----------------------------------------------------------------------
+
+Global Workspace Theory says a mind has a small shared space where
+information is brought together for flexible thinking. A 2026 paper
+(Gurnee et al.) found a similar space inside language models, the
+"J-space", using a tool called the Jacobian lens (J-lens).
+
+  H1: removing the J-lens directions of the task concepts hurts
+      COMBINING facts more than COPYING a fact, and more than a random
+      change of the same size does.
+  H0: no such difference can be seen.
+
+----------------------------------------------------------------------
+3. WHAT CHANGED SINCE V1
+----------------------------------------------------------------------
+
+  v1 problem                              v2 fix
+  -----------------------------------     ------------------------------------
+  Random control was 1.68x too big        C2 now copies C1's exact change size
+                                          at every (layer, position)
+  Removed formatting tokens               Look first: remove only the J-lens
+  (<|im_end|>, blank lines, **)           directions of task concepts, and only
+                                          where the clean model shows them
+  Copy task was too easy (100%)           Tool 3 now lists 3 servers, so 2 wrong
+                                          options are real ids from memory
+  Only accuracy (right/wrong)             Added the answer "margin" (how sure
+                                          the model is) as a second measure
+
+----------------------------------------------------------------------
+4. HOW IT WORKS (WITH AN EXAMPLE)
+----------------------------------------------------------------------
+
+The scripted agent calls 3 tools about one alerted server, for example:
+
+  Tool 1: {"server_id": "CRM-58", "risk": "high"}
+  Tool 2: {"server_id": "CRM-58", "critical_service": false}
+  Tool 3: {"backups": [ {"server_id": "CRM-58", "backup_ready": true,  "backup_id": "BK-796"},
+                        {"server_id": "OPS-71", "backup_ready": true,  "backup_id": "BK-961"},
+                        {"server_id": "FIN-66", "backup_ready": false, "backup_id": "BK-875"} ]}
+
+  Combine task : "Which action is correct?"
+                 (high risk + not critical -> "isolate now")
+  Copy task    : "Which backup_id does tool 3 list for the alerted server?"
+                 ("BK-796"; BK-961 and BK-875 are wrong but present in memory)
+
+For each question, the experiment runs these steps:
+  1. Clean run: read the J-lens at every layer (8 to 24) and every word
+     position. Mark the places where a concept word (backup, risk,
+     critical, true, ...) is in the lens top-20.
+  2. C1 (J edit): remove exactly those concept directions at exactly
+     those places.
+  3. C2 (random edit): at the same places, add a random change of
+     exactly the same size.
+  4. C0 (baseline): the clean run itself.
+
+----------------------------------------------------------------------
+5. CHECKS (ALL PASSED)
+----------------------------------------------------------------------
+
+  Toy maths tests (Jacobian, 2-D example, projection)      : all pass
+  Lens matches the model (top-10 agreement with jlens)     : 98.75% (L8), 100% (L24)
+  "Do-nothing" hook and alpha=0 hook change nothing        : difference = 0.0
+  Same prompt used in all 3 conditions                     : yes
+  Random edit size / J edit size                           : exactly 1.000
+  Trials with at least one concept place (coverage)        : 100%
+  Settings frozen before the test run                      : yes (18:28:54 UTC)
+  Model can do the task normally (dev)                     : 75% combine, 100% copy
+
+----------------------------------------------------------------------
+6. RESULTS
+----------------------------------------------------------------------
+
+6.1 Where the concepts live (the "observe" step)
+
+  Concept places per prompt : about 1000 (combine), about 830 (copy)
+  Most common concepts      : backup (~670 places), risk (~270),
+                              monitoring (~250), monitor (~190),
+                              safe, critical, true, false
+  By layer                  : roughly 25-60 places per layer at layers
+                              8-20, rising to about 120-135 at layers 23-24
+  At the answer position    : no concept was in the lens top-20 there,
+                              so the edits acted on earlier positions
+                              (the memory and the question)
+
+Combine prompts had about 20% more concept places than copy prompts. Part
+of the reason is that the answer options of the combine task contain
+words such as "monitoring" and "isolate".
+
+6.2 Accuracy (4 test scenarios)
+
+                      Combine     Copy
+  C0 baseline          1.00       1.00
+  C1 J edit            1.00       1.00
+  C2 random            1.00       1.00
+
+  Main score S = (1.00 - 1.00) - (1.00 - 1.00) = 0
+
+6.3 Confidence (margin = how much more likely the right letter is
+    than the best wrong letter, in log units)
+
+                      Combine     Copy
+  C0 baseline          4.06       5.84
+  C1 J edit            3.97       5.91
+  C2 random            3.91       5.81
+
+  Margin score S = +0.03, 95% interval from -0.25 to +0.31
+
+  Example: in case_006 (combine), the margin went from 2.25 to 1.88
+  under the J edit and to 1.75 under the random edit. Both edits had
+  about the same small effect. No answer changed anywhere.
+
+6.4 How big were the edits?
+
+  Change size relative to the internal state : about 0.6%
+  Similarity before vs after (cosine)         : 0.9997
+  Plain-text prediction loss                  : 1.799 (C0), 1.795 (C1), 1.796 (C2)
+                                                -> no change at all
+
+So the edit was real (it did change the activations) but tiny.
+
+----------------------------------------------------------------------
+7. WHAT THE RESULT MEANS (AND DOES NOT MEAN)
+----------------------------------------------------------------------
+
+What it shows:
+  - The task concepts ARE visible in the J-lens readout, everywhere in
+    the prompt, and more in later middle layers.
+  - Removing their J-lens directions barely changes the model, for both
+    tasks. The J edit behaves like a random edit of the same size.
+
+Why the automatic outcome "B" must NOT be trusted here:
+  - Every cell was already at 100%, so accuracy could only go down. It
+    could never show a difference that cancels out, and S had to be 0.
+  - With 4 scenarios, the bootstrap interval for S is [0, 0] only
+    because every resample is identical. It is not because the estimate
+    is precise.
+  - The "B" rule in the code checks that the interval is narrow, but it
+    does not check for a ceiling or a minimum sample size. This is a gap
+    in the outcome rules that should be fixed (section 9).
+
+What we can honestly say:
+  - Removing the token-level J-lens directions of the task concepts is
+    a WEAK intervention for this model. It removes about 0.6% of the
+    state, and about 0.004% of its variance. The paper itself notes
+    that the J-space part of an activation is small (at most 10% of the
+    variance).
+  - A null result from such a weak edit does not tell us whether the
+    J-space is involved in combining information.
+
+What we cannot say:
+  - that H1 is false, or that the J-space plays no role in this task;
+  - anything about Global Workspace Theory being true or false;
+  - anything about consciousness, feelings or AI welfare.
+
+----------------------------------------------------------------------
+8. HONEST RECORD OF THE RUN HISTORY
+----------------------------------------------------------------------
+
+  run_20261109T171915Z  v1, 24 test scenarios, complete. Invalid
+                        (control 1.68x too big). See its own report.
+  run_20261109T175937Z  v2, stopped at start by a notebook code error
+  run_20261109T180159Z  v2, stopped at start by the same error
+  run_20261109T180715Z  v2 with 96 test scenarios. The protocol was frozen
+                        at 18:12:02 UTC. It was stopped by the user after
+                        2 test scenarios (both correct in all conditions)
+                        because it was too slow. No results were saved.
+  run_20261109T182530Z  v2 with 4 test scenarios (this run), complete
+
+The test size was reduced (96 -> 48 -> 4) for run time only, not
+because of any result. Changing the size also generates a new test
+set. This should still be reported, because it was decided after 2 test
+scenarios had been seen.
+
+Note: during this run another process held most of the GPU memory, so
+all 32 layers ran from CPU RAM (0/32 on GPU). This changes speed, not
+results.
+
+----------------------------------------------------------------------
+9. NEXT STEPS
+----------------------------------------------------------------------
+
+  1. Fix the outcome rule: outcome "B" should require at least ~24
+     scenarios and a baseline below the ceiling (for example below 95%),
+     otherwise report "E: inconclusive".
+  2. Use a STRONGER, DIRECTED test, from the paper's own toolbox (§2.5,
+     §3.5.1): a J-lens coordinate SWAP. For example, swap "true" and
+     "false" at the backup_ready value of the alerted server.
+       Prediction if the J-space carries the decision:
+         combine answer flips ("fail over" <-> "revoke credentials"),
+         copy answer (the backup id) stays the same.
+     This gives a clear predicted direction, instead of hoping that a
+     tiny removal hurts.
+  3. If you keep the removal design, add a dose-response (strength
+     alpha above 1, i.e. push against the concept) and register it in
+     advance.
+  4. Run at least 12 scenarios per action (48 in total) for any real
+     conclusion. The pipeline is ready: only n_test_per_action in
+     config.py needs to change.
+
+----------------------------------------------------------------------
+10. FILES IN THIS FOLDER
+----------------------------------------------------------------------
+
+  trial_results.csv             the 24 test trials, one row each
+  dev_trials.csv                the practice trials used for set-up
+  concept_localization_dev.csv  where concepts appear in the clean J-lens
+  summary.json                  accuracy, S, margin S, outcome, checklist
+  validation_log.json           all maths, lens and hook checks
+  frozen_protocol.json          settings saved BEFORE the test run
+  run_metadata.json             model, lens, versions, seeds
+  scenarios.jsonl               the 8 scenarios used
+  run_log.txt                   timeline of the run
+  figures/                      accuracy chart and S chart
+
+======================================================================

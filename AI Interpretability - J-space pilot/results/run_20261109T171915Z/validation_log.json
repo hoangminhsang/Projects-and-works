@@ -1,0 +1,330 @@
+{
+  "toy_math_checks": {
+    "autograd": {
+      "x": [
+        3.0,
+        2.0
+      ],
+      "f(x)": [
+        8.0,
+        9.0
+      ],
+      "J_analytic": [
+        [
+          2.0,
+          1.0
+        ],
+        [
+          1.0,
+          3.0
+        ]
+      ],
+      "J_autograd": [
+        [
+          2.0,
+          1.0
+        ],
+        [
+          1.0,
+          3.0
+        ]
+      ],
+      "J_finite_difference": [
+        [
+          1.9998549222946167,
+          0.9996890425682068
+        ],
+        [
+          0.9994506239891052,
+          3.0002591609954834
+        ]
+      ],
+      "f(x+delta)-f(x)": [
+        0.19999980926513672,
+        0.10000038146972656
+      ],
+      "J @ delta": [
+        0.20000000298023224,
+        0.10000000149011612
+      ],
+      "autograd_matches_analytic": true,
+      "finite_diff_matches_analytic": true,
+      "taylor_rule_holds": true
+    },
+    "r2_ablation": {
+      "J": [
+        [
+          2.0,
+          1.0
+        ],
+        [
+          1.0,
+          3.0
+        ]
+      ],
+      "h": [
+        3.0,
+        2.0
+      ],
+      "w_token": [
+        1.0,
+        -1.0
+      ],
+      "J h": [
+        8.0,
+        9.0
+      ],
+      "score_before = w.(J h)": -1.0,
+      "v = J^T w": [
+        1.0,
+        -2.0
+      ],
+      "v.h (should equal score)": -1.0,
+      "projection of h on v": [
+        -0.20000000298023224,
+        0.4000000059604645
+      ],
+      "h_ablated": [
+        3.200000047683716,
+        1.600000023841858
+      ],
+      "v.h_ablated": 0.0,
+      "||h_ablated - h||": 0.4472135901451111,
+      "J h_ablated": [
+        8.0,
+        8.0
+      ],
+      "score_after = w.(J h_ablated)": 0.0
+    },
+    "invariants": {
+      "v has shape [d]": true,
+      "w^T diag(g) J h == v . h": true,
+      "alpha=0 leaves h unchanged": true,
+      "alpha=1 gives v . h_new ~ 0": true,
+      "k=1 span projection == remove_direction": true,
+      "residual orthogonal to every selected vector": true,
+      "projection is idempotent (P P h = P h)": true,
+      "duplicate/near-duplicate vectors: same projection": true,
+      "duplicate/near-duplicate vectors: rank stays k": true,
+      "||delta_random|| == ||delta_J||": true,
+      "no NaN/Inf anywhere": true
+    }
+  },
+  "dataset_checks": [
+    "decision rule correct on all 12 input combinations",
+    "scenario, server and backup ids are unique (no dev/test overlap)",
+    "test split balanced: 6 scenarios per semantic action",
+    "every label comes from expected_action(), not from a model",
+    "every question has exactly 4 options (A-D) and exactly 1 correct option",
+    "option letters match the semantic answers after shuffling",
+    "retrieval answer appears in tool 3 output; distractors do not",
+    "memory is identical for both tasks of a scenario; no answer key in prompts"
+  ],
+  "baseline_dev": {
+    "integration": 0.8333333333333334,
+    "retrieval": 1.0
+  },
+  "baseline_feasible": true,
+  "hook_checks_before_lens": {
+    "repeat_max_abs_diff": 0.0,
+    "noop_max_abs_diff": 0.0,
+    "tolerance": 0.001,
+    "passed": true
+  },
+  "lens": {
+    "is_valid": true,
+    "local_path": "/home/kali/.cache/huggingface/hub/models--neuronpedia--jacobian-lens/snapshots/16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a/qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt",
+    "file_sha256": "1f9a8f8fd593f0ffec1a9640993257ca4560f8ae3e5602315643d5cc6818534e",
+    "checks": {
+      "lens_d_model": 2560,
+      "model_d_model": 2560,
+      "lens_source_layers": "0..30 (31 layers)",
+      "lens_n_prompts": 1000,
+      "d_model_matches": true,
+      "required_layers": [
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ],
+      "required_layers_present": true,
+      "jacobians_finite": true,
+      "jacobian_fro_norm_over_sqrt_d": {
+        "12": 1.055,
+        "13": 1.101,
+        "14": 1.123,
+        "15": 1.166,
+        "16": 1.166,
+        "17": 1.202
+      },
+      "final_norm_offdiag_ratio": 0.0,
+      "final_norm_is_diagonal": true,
+      "basis_vs_jlens_top10_overlap_L12": 0.9875,
+      "basis_vs_jlens_top10_overlap_L17": 0.9500000000000001
+    },
+    "error": null
+  },
+  "band_selection": [
+    {
+      "band": "medium",
+      "layers": "12-17",
+      "acceptable": true,
+      "j_retrieval_acc": 1.0,
+      "j_integration_acc": 0.8333333333333334,
+      "j_valid_rate": 1.0
+    }
+  ],
+  "hook_checks_with_band": {
+    "repeat_max_abs_diff": 0.0,
+    "noop_max_abs_diff": 0.0,
+    "alpha0_max_abs_diff": 0.0,
+    "alpha0_hook_fired": true,
+    "tolerance": 0.001,
+    "passed": true
+  },
+  "intervention_diagnostics_one_dev_prompt": {
+    "j_ablation": [
+      {
+        "layer": 12,
+        "positions_edited": "16..335",
+        "mean_||h||": 8.17,
+        "mean_||delta||": 1.212,
+        "mean_||delta_J_here||": 1.212,
+        "mean_cos(h,h_new)": 0.98804,
+        "mean_rank(top-k J vectors)": 10.0,
+        "mean_|cos(delta_R,delta_J)|": 0.0,
+        "sites_with_zero_delta": 0
+      },
+      {
+        "layer": 13,
+        "positions_edited": "16..335",
+        "mean_||h||": 8.6,
+        "mean_||delta||": 1.077,
+        "mean_||delta_J_here||": 1.077,
+        "mean_cos(h,h_new)": 0.99157,
+        "mean_rank(top-k J vectors)": 10.0,
+        "mean_|cos(delta_R,delta_J)|": 0.0,
+        "sites_with_zero_delta": 0
+      },
+      {
+        "layer": 14,
+        "positions_edited": "16..335",
+        "mean_||h||": 8.91,
+        "mean_||delta||": 0.889,
+        "mean_||delta_J_here||": 0.889,
+        "mean_cos(h,h_new)": 0.99478,
+        "mean_rank(top-k J vectors)": 10.0,
+        "mean_|cos(delta_R,delta_J)|": 0.0,
+        "sites_with_zero_delta": 0
+      },
+      {
+        "layer": 15,
+        "positions_edited": "16..335",
+        "mean_||h||": 9.12,
+        "mean_||delta||": 0.646,
+        "mean_||delta_J_here||": 0.646,
+        "mean_cos(h,h_new)": 0.99728,
+        "mean_rank(top-k J vectors)": 10.0,
+        "mean_|cos(delta_R,delta_J)|": 0.0,
+        "sites_with_zero_delta": 0
+      },
+      {
+        "layer": 16,
+        "positions_edited": "16..335",
+        "mean_||h||": 9.26,
+        "mean_||delta||": 0.699,
+        "mean_||delta_J_here||": 0.699,
+        "mean_cos(h,h_new)": 0.99698,
+        "mean_rank(top-k J vectors)": 10.0,
+        "mean_|cos(delta_R,delta_J)|": 0.0,
+        "sites_with_zero_delta": 0
+      },
+      {
+        "layer": 17,
+        "positions_edited": "16..335",
+        "mean_||h||": 9.77,
+        "mean_||delta||": 0.71,
+        "mean_||delta_J_here||": 0.71,
+        "mean_cos(h,h_new)": 0.9972,
+        "mean_rank(top-k J vectors)": 10.0,
+        "mean_|cos(delta_R,delta_J)|": 0.0,
+        "sites_with_zero_delta": 0
+      }
+    ],
+    "random_ablation": [
+      {
+        "layer": 12,
+        "positions_edited": "16..335",
+        "mean_||h||": 8.17,
+        "mean_||delta||": 1.212,
+        "mean_||delta_J_here||": 1.212,
+        "mean_cos(h,h_new)": 0.98845,
+        "mean_rank(top-k J vectors)": 10.0,
+        "mean_|cos(delta_R,delta_J)|": 0.0177,
+        "sites_with_zero_delta": 0
+      },
+      {
+        "layer": 13,
+        "positions_edited": "16..335",
+        "mean_||h||": 8.85,
+        "mean_||delta||": 1.278,
+        "mean_||delta_J_here||": 1.278,
+        "mean_cos(h,h_new)": 0.98906,
+        "mean_rank(top-k J vectors)": 10.0,
+        "mean_|cos(delta_R,delta_J)|": 0.0165,
+        "sites_with_zero_delta": 0
+      },
+      {
+        "layer": 14,
+        "positions_edited": "16..335",
+        "mean_||h||": 9.73,
+        "mean_||delta||": 1.35,
+        "mean_||delta_J_here||": 1.35,
+        "mean_cos(h,h_new)": 0.98981,
+        "mean_rank(top-k J vectors)": 10.0,
+        "mean_|cos(delta_R,delta_J)|": 0.0155,
+        "sites_with_zero_delta": 0
+      },
+      {
+        "layer": 15,
+        "positions_edited": "16..335",
+        "mean_||h||": 10.23,
+        "mean_||delta||": 1.428,
+        "mean_||delta_J_here||": 1.428,
+        "mean_cos(h,h_new)": 0.98979,
+        "mean_rank(top-k J vectors)": 10.0,
+        "mean_|cos(delta_R,delta_J)|": 0.0169,
+        "sites_with_zero_delta": 0
+      },
+      {
+        "layer": 16,
+        "positions_edited": "16..335",
+        "mean_||h||": 10.7,
+        "mean_||delta||": 1.65,
+        "mean_||delta_J_here||": 1.65,
+        "mean_cos(h,h_new)": 0.98746,
+        "mean_rank(top-k J vectors)": 10.0,
+        "mean_|cos(delta_R,delta_J)|": 0.0162,
+        "sites_with_zero_delta": 0
+      },
+      {
+        "layer": 17,
+        "positions_edited": "16..335",
+        "mean_||h||": 11.61,
+        "mean_||delta||": 1.805,
+        "mean_||delta_J_here||": 1.805,
+        "mean_cos(h,h_new)": 0.98751,
+        "mean_rank(top-k J vectors)": 10.0,
+        "mean_|cos(delta_R,delta_J)|": 0.0147,
+        "sites_with_zero_delta": 0
+      }
+    ]
+  },
+  "neutral_nll": {
+    "baseline": 1.7985849443650404,
+    "j_ablation": 1.9799397954877638,
+    "random_ablation": 1.8825356186620448
+  }
+}

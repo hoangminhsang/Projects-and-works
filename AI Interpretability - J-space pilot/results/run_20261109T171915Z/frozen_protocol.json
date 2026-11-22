@@ -1,0 +1,98 @@
+{
+  "frozen_at_utc": "2026-11-09T17:26:18.041932+00:00",
+  "config": {
+    "seed": 42,
+    "prompt_template_version": "soc-v1",
+    "n_dev": 6,
+    "n_test_per_action": 6,
+    "model_id": "Qwen/Qwen3.5-4B",
+    "model_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+    "dtype": "bfloat16",
+    "n_gpu_layers": null,
+    "vram_reserve_gib": 1.8,
+    "lens_repo": "neuronpedia/jacobian-lens",
+    "lens_revision": "qwen-n1000",
+    "lens_filename": "qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt",
+    "jlens_source": "https://github.com/anthropics/jacobian-lens",
+    "jlens_commit_tested": "581d398613e5602a5af361e1c34d3a92ea82ba8e",
+    "candidate_bands": [
+      {
+        "name": "medium",
+        "first_layer": 12,
+        "last_layer": 17
+      },
+      {
+        "name": "light",
+        "first_layer": 12,
+        "last_layer": 14
+      }
+    ],
+    "top_k": 10,
+    "protect_top_n_output": 10,
+    "first_editable_position": 16,
+    "alpha": 1.0,
+    "span_rtol": 0.0001,
+    "random_control_seed": 1234,
+    "dev_min_ablated_retrieval_acc": 0.5,
+    "dev_min_valid_rate": 0.5,
+    "baseline_min_accuracy": 0.7,
+    "n_bootstrap": 2000,
+    "ci_level": 0.95,
+    "null_max_ci_width": 0.3,
+    "null_max_abs_s": 0.1,
+    "general_damage_drop": 0.25,
+    "results_root": "/home/kali/Desktop/Anthropic_reserach/takehome_v3/experiment/results",
+    "neutral_texts": [
+      "The river runs through the valley for nearly two hundred kilometres before it reaches the sea. Farmers along its banks grow wheat, barley and sunflowers, and in late summer the fields turn a deep gold. Several small towns grew up at the old crossing points, where ferries once carried carts and cattle to the other side.",
+      "To make a simple loaf of bread, mix flour, water, salt and yeast until a soft dough forms. Knead it for about ten minutes, then leave it covered in a warm place until it has doubled in size. Shape the dough, let it rise again, and bake it in a hot oven until the crust is brown and the loaf sounds hollow when tapped underneath.",
+      "The committee met on Tuesday to review the annual budget. Members agreed to increase funding for the public library and to postpone the repairs to the community hall until next spring. A final vote on the proposal is expected at the next meeting, which will be held in the town council chamber and is open to the public."
+    ]
+  },
+  "chosen_band": {
+    "name": "medium",
+    "first_layer": 12,
+    "last_layer": 17
+  },
+  "lens_validated": true,
+  "test_scenario_ids": [
+    "case_007",
+    "case_008",
+    "case_009",
+    "case_010",
+    "case_011",
+    "case_012",
+    "case_013",
+    "case_014",
+    "case_015",
+    "case_016",
+    "case_017",
+    "case_018",
+    "case_019",
+    "case_020",
+    "case_021",
+    "case_022",
+    "case_023",
+    "case_024",
+    "case_025",
+    "case_026",
+    "case_027",
+    "case_028",
+    "case_029",
+    "case_030"
+  ],
+  "source_sha256": {
+    "__init__.py": "9d51771f4e535a43",
+    "agent.py": "75cd086295e1080e",
+    "config.py": "8b2f96b934563c4d",
+    "experiment.py": "340c78cc7f099bd7",
+    "interventions.py": "f1bfd0b150eee574",
+    "lens_setup.py": "c5a566f919e3651a",
+    "metrics.py": "574c9cf697c08975",
+    "model_io.py": "155ead46174aa67b",
+    "reporting.py": "79c49087cda8ff1c",
+    "scenarios.py": "f402a63a28848825",
+    "toy_math.py": "1c9b4ed0b45a6919",
+    "validation.py": "e1d9cc91dc3cd206"
+  },
+  "primary_metric": "S on strict accuracy (invalid = wrong), paired bootstrap over scenarios"
+}

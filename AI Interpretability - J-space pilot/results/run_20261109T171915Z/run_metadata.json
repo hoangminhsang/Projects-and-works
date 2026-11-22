@@ -1,0 +1,138 @@
+{
+  "run_id": "run_20261109T171915Z",
+  "environment": {
+    "execution_utc": "2026-11-09T17:19:19.731162+00:00",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.42",
+    "torch": "2.14.1+cu130",
+    "transformers": "5.19.0",
+    "accelerate": "1.15.0",
+    "huggingface_hub": "1.33.0",
+    "jlens": "0.1.0",
+    "jlens_install_source": "{\"dir_info\": {\"editable\": true}, \"url\": \"file:///home/kali/Desktop/jacobian-lens\"}",
+    "cuda_available": true,
+    "gpu_name": "NVIDIA GeForce RTX 5060 Laptop GPU",
+    "gpu_vram_gib": 7.96,
+    "cuda_version": "13.0",
+    "bf16_supported": true
+  },
+  "model_id": "Qwen/Qwen3.5-4B",
+  "model_revision_requested": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+  "model_commit_loaded": null,
+  "tokenizer_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+  "dtype": "bfloat16",
+  "device_map_summary": {
+    "n_gpu_layers": 12,
+    "n_layers": 32
+  },
+  "global_seed": 42,
+  "random_control_seed": 1234,
+  "prompt_template_version": "soc-v1",
+  "lens": {
+    "repo": "neuronpedia/jacobian-lens",
+    "revision": "qwen-n1000",
+    "file": "qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt",
+    "sha256": "1f9a8f8fd593f0ffec1a9640993257ca4560f8ae3e5602315643d5cc6818534e",
+    "jlens_commit_tested": "581d398613e5602a5af361e1c34d3a92ea82ba8e"
+  },
+  "hook_locations": {
+    "module": "decoder block output (residual stream)",
+    "layers": [
+      12,
+      13,
+      14,
+      15,
+      16,
+      17
+    ],
+    "positions": ">= 16, prefill only (no decoding, no KV cache)"
+  },
+  "alpha_calibration": "alpha fixed at 1.0 (full projection removal, as in the paper); not tuned. Band chosen on dev by the pre-registered rule.",
+  "j_direction_definition": "v_t = J_l^T (g * w_t), g = final RMSNorm gain read from the model",
+  "j_intervention": "orthogonal projection onto span of top-k J-lens vectors via SVD (rtol=0.0001); not sparse non-negative J-space decomposition",
+  "random_control": "norm-matched random perturbation: delta_R = -||delta_J|| * r/||r||, r ~ N(0, I), seed = hash(base seed, layer, prompt sha)",
+  "decoding": "single prefill forward; strict = full-vocab top-1 token (greedy first token); restricted = argmax over letter tokens",
+  "protocol_frozen_at_utc": "2026-11-09T17:26:18.041932+00:00",
+  "dev_scenario_ids": [
+    "case_001",
+    "case_002",
+    "case_003",
+    "case_004",
+    "case_005",
+    "case_006"
+  ],
+  "test_scenario_ids": [
+    "case_007",
+    "case_008",
+    "case_009",
+    "case_010",
+    "case_011",
+    "case_012",
+    "case_013",
+    "case_014",
+    "case_015",
+    "case_016",
+    "case_017",
+    "case_018",
+    "case_019",
+    "case_020",
+    "case_021",
+    "case_022",
+    "case_023",
+    "case_024",
+    "case_025",
+    "case_026",
+    "case_027",
+    "case_028",
+    "case_029",
+    "case_030"
+  ],
+  "config": {
+    "seed": 42,
+    "prompt_template_version": "soc-v1",
+    "n_dev": 6,
+    "n_test_per_action": 6,
+    "model_id": "Qwen/Qwen3.5-4B",
+    "model_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+    "dtype": "bfloat16",
+    "n_gpu_layers": null,
+    "vram_reserve_gib": 1.8,
+    "lens_repo": "neuronpedia/jacobian-lens",
+    "lens_revision": "qwen-n1000",
+    "lens_filename": "qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt",
+    "jlens_source": "https://github.com/anthropics/jacobian-lens",
+    "jlens_commit_tested": "581d398613e5602a5af361e1c34d3a92ea82ba8e",
+    "candidate_bands": [
+      {
+        "name": "medium",
+        "first_layer": 12,
+        "last_layer": 17
+      },
+      {
+        "name": "light",
+        "first_layer": 12,
+        "last_layer": 14
+      }
+    ],
+    "top_k": 10,
+    "protect_top_n_output": 10,
+    "first_editable_position": 16,
+    "alpha": 1.0,
+    "span_rtol": 0.0001,
+    "random_control_seed": 1234,
+    "dev_min_ablated_retrieval_acc": 0.5,
+    "dev_min_valid_rate": 0.5,
+    "baseline_min_accuracy": 0.7,
+    "n_bootstrap": 2000,
+    "ci_level": 0.95,
+    "null_max_ci_width": 0.3,
+    "null_max_abs_s": 0.1,
+    "general_damage_drop": 0.25,
+    "results_root": "/home/kali/Desktop/Anthropic_reserach/takehome_v3/experiment/results",
+    "neutral_texts": [
+      "The river runs through the valley for nearly two hundred kilometres before it reaches the sea. Farmers along its banks grow wheat, barley and sunflowers, and in late summer the fields turn a deep gold. Several small towns grew up at the old crossing points, where ferries once carried carts and cattle to the other side.",
+      "To make a simple loaf of bread, mix flour, water, salt and yeast until a soft dough forms. Knead it for about ten minutes, then leave it covered in a warm place until it has doubled in size. Shape the dough, let it rise again, and bake it in a hot oven until the crust is brown and the loaf sounds hollow when tapped underneath.",
+      "The committee met on Tuesday to review the annual budget. Members agreed to increase funding for the public library and to postpone the repairs to the community hall until next spring. A final vote on the proposal is expected at the next meeting, which will be held in the town council chamber and is open to the public."
+    ]
+  }
+}
